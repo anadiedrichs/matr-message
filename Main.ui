@@ -27,12 +27,5 @@
             <action type="RunRuleAction" ruleContext="MainContext" ruleName="rulePublish"/>
         </event>
     </button>
-    <button wpercentage="1" height="40" textAlignment="center" cornerRadius="2" alpha="1" backgroundColor="#a9b4ba" fontSize="15" marginTop="4" marginBottom="8" paddingRight="8" paddingTop="8" paddingBottom="8" paddingLeft="8" textColor="#ffffff" text="disconnect">
-        <selectedState/>
-        <highlightedState/>
-        <event on="TapEvent">
-            <action type="RunRuleAction" ruleContext="MainContext" ruleName="ruleDisconnect"/>
-        </event>
-    </button>
     <list wpercentage="1" alpha="1" fontFamily="Roboto, sans-serif" marginTop="0" marginBottom="8" marginLeft="0" marginRight="0" paddingRight="0" paddingTop="0" paddingBottom="0" paddingLeft="0" textColor="#3d464d" bind="main.messages"/>
 </layout>
