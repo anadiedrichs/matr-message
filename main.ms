@@ -1,3 +1,12 @@
+Model User{
+    String name
+}
+
+Model Message{
+    String msg
+    User user
+}
+
 // Matr template code, delete/update as needed
 Experience Main {
     // Add your attributes here
@@ -9,23 +18,34 @@ Experience Main {
     //Decision r5 action("MainContext.ruleDisconnect") label("disconnect")
     Array<String> messages value([]) as List
 }
+
 Application{
+    
     String topicName
     Bool suscribed
-    OnInit{
-        topicName = "mensajeria"// nombre del canal creado anteriormente 
-        broker.async.initialize()
-        broker.async.connect()
-        broker.async.subscribe(topicName, @function(Subscriptors.handler))
-        suscribed = true
     
+    OnInit{
+        
+        topicName = "mensajeria"// nombre del canal creado anteriormente 
+        
+        try{
+        
+            broker.async.initialize()
+            broker.async.connect()
+            broker.async.subscribe(topicName, @function(Subscriptors.handler))
+            suscribed = true
+        
+        }catch(e){
+            broker.ui.showAlert("Exception : "+e.name(), "Description: " + e.reason())
+        }  
+        
     }
 }
 
 RuleContext MainContext {
     Rule ruleSubscribe{
     
-        if(suscribed){
+        if(!suscribed){
         
             Main m = broker.ui.getDataSource()
             broker.async.subscribe(topicName, @function(Subscriptors.handler))
@@ -33,7 +53,7 @@ RuleContext MainContext {
         
         } else { 
         
-            broker.ui.showAlert("Warning", "You have to suscribe to the channel first.")
+            broker.ui.showAlert("Warning", "You have already suscribed to the channel.")
         }
     }
     Rule rulePublish{
@@ -76,10 +96,19 @@ RuleContext MainContext {
 }
 
 
-
 Module Subscriptors{
+
     void handler(Message message){
-        Main m = broker.ui.getDataSource()
-        m.messages.add("De " + message.user.name + ": " + message.msg)
+    
+        if(message!=null  ){
+        
+            Main m = broker.ui.getDataSource()
+            m.messages.add("De " + message.user.name + ": " + message.msg)
+            // m.userName = "" // limpio TextField
+            // m.msg = ""  // limpio TextField
+        }else{
+             //error .
+                broker.ui.showAlert("DEBUG", "ERROR revisa el formato de tu JSON")
+        }
     }
 }
